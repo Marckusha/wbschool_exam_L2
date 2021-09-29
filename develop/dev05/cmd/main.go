@@ -15,17 +15,13 @@ limitations under the License.
 */
 package main
 
-import (
-	"wbschool_exam_L2/develop/dev06/pkg/root"
-)
+import "wbschool_exam_L2/develop/dev05/pkg/root"
+
+//TODO
+//set color find symbols
 
 func main() {
-	comm := root.NewCommand()
-	root.SetFlags(comm)
-	comm.Execute()
-
-	/*s := "h:"
-	d := strings.Split(s, "helloworld")
-	fmt.Println(len(d))*/
-
+	c := root.NewCommand()
+	root.SetFlags(c)
+	c.Execute()
 }

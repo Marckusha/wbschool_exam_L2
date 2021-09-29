@@ -16,16 +16,17 @@ limitations under the License.
 package main
 
 import (
-	"wbschool_exam_L2/develop/dev06/pkg/root"
+	"fmt"
+	"wbschool_exam_L2/develop/dev03/pkg/root"
+
+	"os"
 )
 
 func main() {
-	comm := root.NewCommand()
-	root.SetFlags(comm)
-	comm.Execute()
+	os.Args = append(os.Args, "file1.txt", "-c")
 
-	/*s := "h:"
-	d := strings.Split(s, "helloworld")
-	fmt.Println(len(d))*/
-
+	c := root.NewCommand()
+	root.SetFlags(c)
+	c.Execute()
+	fmt.Println(root.TestString)
 }
