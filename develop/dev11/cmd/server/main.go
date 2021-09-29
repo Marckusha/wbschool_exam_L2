@@ -12,11 +12,13 @@ import (
 func main() {
 	serv := server.NewService()
 
-	tranportCreateEvent := server.NewCreateEventTransport()
-	transportUpdateEven := server.NewUpdateEventTransport()
+	createTransport := server.NewCreateEventTransport()
+	updateTransport := server.NewUpdateEventTransport()
+	deleteTransport := server.NewDeleteTransport()
 
-	http.Handle("/createEvent", server.NewCreateHandler(serv, tranportCreateEvent))
-	http.Handle("/updateEvent", server.NewUpdateHandler(serv, transportUpdateEven))
-	fmt.Println("starting server at: 8082")
+	http.Handle("/createEvent", server.NewCreateHandler(serv, createTransport))
+	http.Handle("/updateEvent", server.NewUpdateHandler(serv, updateTransport))
+	http.Handle("/deleteEvent", server.NewDeleteHandler(serv, deleteTransport))
+	fmt.Println("starting server at: 8081")
 	http.ListenAndServe(":8082", nil)
 }

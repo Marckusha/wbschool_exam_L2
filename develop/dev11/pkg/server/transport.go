@@ -69,3 +69,34 @@ func (ev *updateEventTransport) EncodeResponse(req *http.Request, res *http.Resp
 func NewUpdateEventTransport() UpdateEventTransport {
 	return &updateEventTransport{}
 }
+
+type DeleteEventTransport interface {
+	DecodeRequest(req *http.Request) (event Event, err error)
+	EncodeResponse(req *http.Request, res *http.Response) (err error)
+}
+
+type deleteEventTransport struct{}
+
+func (ev *deleteEventTransport) DecodeRequest(req *http.Request) (event Event, err error) {
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		return
+	}
+
+	var request Event
+	if err = json.Unmarshal(body, &request); err != nil {
+		return
+	}
+
+	event = request
+
+	return
+}
+
+func (ev *deleteEventTransport) EncodeResponse(req *http.Request, res *http.Response) (err error) {
+	return
+}
+
+func NewDeleteTransport() DeleteEventTransport {
+	return &deleteEventTransport{}
+}
