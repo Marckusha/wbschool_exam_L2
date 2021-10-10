@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -23,16 +24,13 @@ type TelnetClient struct {
 func (tc *TelnetClient) Dial() (err error) {
 
 	if tc.Timeout == 0 {
-		tc.Timeout = 10 * time.Second
+		tc.Timeout = 10 * time.Millisecond
 	}
-
 	tc.conn, err = net.DialTimeout("tcp", tc.Address+":"+tc.Port, tc.Timeout)
+
 	if err != nil {
 		return
 	}
-
-	//tc.reader = bufio.NewReader(tc.conn)
-	//tc.writer = bufio.NewWriter(tc.conn)
 
 	return
 }
@@ -48,11 +46,12 @@ func (tc *TelnetClient) Execute() {
 		_, err := fmt.Scanln(&text)
 
 		if err == io.EOF {
-			fmt.Println("EOF")
+			return
 		}
 
 		if err != nil {
 			fmt.Println("Некорректный ввод", err)
+
 			continue
 		}
 		// отправляем сообщение серверу
@@ -65,7 +64,6 @@ func (tc *TelnetClient) Execute() {
 		buff := make([]byte, 1024)
 		n, err := tc.conn.Read(buff)
 		if err != nil {
-			fmt.Println("TUT", err)
 			break
 		}
 		fmt.Print(string(buff[0:n]))
@@ -114,9 +112,14 @@ func StringToTime(t string) (dur time.Duration) {
 func main() {
 	flag.Parse()
 
+	if len(os.Args) < 3 {
+		fmt.Println("error")
+		return
+	}
+
 	tc := TelnetClient{
-		Address: "localhost",
-		Port:    "8084",
+		Address: os.Args[2],
+		Port:    os.Args[3],
 		Timeout: StringToTime(*timeout),
 	}
 

@@ -8,21 +8,37 @@ import (
 	"os"
 )
 
-/*
-type Event struct {
-	Day   string
-	Week  string
-	Month string
-	Task  string
-}*/
+var port string = ":8086"
 
-func main() {
+func postCreate() {
 
-	s := []byte(`{"Day":"1","Month":"1","Week":"may","Task":"print hello world"}`)
+	s := []byte(`{"Date":"2021-01-01T00:00:00Z","Note": "Happy burdfs"}`)
+
+	r := bytes.NewReader(s)
+	cli := http.Client{}
+
+	req, err := http.NewRequest("POST", "http://localhost"+port+"/create_event", r)
+	req.Header.Set("user_id", "1")
+	resp, err := cli.Do(req)
+
+	if err != nil {
+		fmt.Println("error")
+		return
+	}
+
+	defer resp.Body.Close()
+	io.Copy(os.Stdout, resp.Body)
+}
+
+func postDelete() {
+
+	s := []byte(`{"Date":"2021-01-01","Note": "Hello, World!"}`)
 	r := bytes.NewReader(s)
 	cli := http.Client{}
 	fmt.Println("1")
-	resp, err := cli.Post("http://localhost:8082/deleteEvent", "application/json", r)
+	req, err := http.NewRequest("POST", "http://localhost"+port+"/delete_event", r)
+	req.Header.Set("user_id", "2")
+	resp, err := cli.Do(req)
 	fmt.Println("2")
 	if err != nil {
 		fmt.Println("error")
@@ -32,4 +48,20 @@ func main() {
 	defer resp.Body.Close()
 	io.Copy(os.Stdout, resp.Body)
 	fmt.Println("4")
+}
+
+func get() {
+	url := "http://localhost" + port + "/get_events_for_month?user_id=1&data=2021-01-01"
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println("dont get request")
+		return
+	}
+
+	defer resp.Body.Close()
+	fmt.Println("end get method")
+}
+
+func main() {
+	postCreate()
 }

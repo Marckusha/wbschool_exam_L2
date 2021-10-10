@@ -11,24 +11,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
-
-//var LinesStr ArrayStrings.ArrayStrings
 var TestString string
 
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
-		Use:   "mySort",
-		Short: "A brief description of your application",
-		Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-		// Uncomment the following line if your bare application
-		// has an action associated with it:
-
 		Run: func(cmd *cobra.Command, args []string) {
 
 			if len(args) == 0 {
@@ -105,8 +91,6 @@ to quickly create a Cobra application.`,
 
 func SetFlags(c *cobra.Command) {
 	var count int
-
-	c.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.mySort.yaml)")
 
 	c.Flags().IntVarP(&count, "column", "k", 0, "Sorts by column")
 	c.Flags().BoolP("reverse", "r", false, "Revers sorts")

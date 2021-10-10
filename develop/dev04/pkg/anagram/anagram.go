@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+//принимает массив строк и возвращает мапу с анаграммами согласно тз
 func GetMapAnagram(str []string) map[string][]string {
 
 	an := make(map[string]string) // мапа, в которой хрянятся массивы анаграмм ключей
@@ -28,6 +29,7 @@ func GetMapAnagram(str []string) map[string][]string {
 	return result
 }
 
+//функция для сортировки символов в строке
 func strSort(str string) string {
 	var (
 		res       bytes.Buffer

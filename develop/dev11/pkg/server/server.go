@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -12,19 +11,18 @@ type createEventHandler struct {
 
 func (s *createEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Fprintln(w, "create method")
-
-	event, err := s.transport.DecodeRequest(r)
+	event, userID, err := s.transport.DecodeRequest(r)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = s.serv.CreateEvent(event)
+	err = s.serv.CreateEvent(userID, event)
 	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
 
-	fmt.Println(event)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 }
@@ -41,25 +39,24 @@ type updateEventHandler struct {
 	transport UpdateEventTransport
 }
 
-//TODO
 func (s *updateEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Fprintln(w, "update method")
-
-	event, err := s.transport.DecodeRequest(r)
+	userID, evs, err := s.transport.DecodeRequest(r)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	//TODO!!!
-	err = s.serv.UpdateEvent(event, event)
-	if err != nil {
+	if len(evs) != 2 {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println(event)
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	err = s.serv.UpdateEvent(userID, evs[0], evs[1])
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
 }
 
 func NewUpdateHandler(s Service, t UpdateEventTransport) http.Handler {
@@ -76,30 +73,122 @@ type deleteEventHandler struct {
 
 func (s *deleteEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Fprintln(w, "delete method")
-
-	event, err := s.transport.DecodeRequest(r)
+	event, userID, err := s.transport.DecodeRequest(r)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println(1)
+	err = s.serv.DeleteEvent(userID, event)
 
-	err = s.serv.DeleteEvent(event)
-
-	fmt.Println(2)
 	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
 
-	fmt.Println(3)
-	fmt.Println(event)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 }
 
 func NewDeleteHandler(s Service, t DeleteEventTransport) http.Handler {
 	return &deleteEventHandler{
+		serv:      s,
+		transport: t,
+	}
+}
+
+type getEventsForDay struct {
+	serv      Service
+	transport GetEventsDayTransport
+}
+
+func (s *getEventsForDay) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	event, userID, err := s.transport.DecodeRequest(r)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	notes, err := s.serv.EventsForDay(userID, event)
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	if err = s.transport.EncodeResponse(r, w, notes); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func NewGetDayHandler(s Service, t GetEventsDayTransport) http.Handler {
+	return &getEventsForDay{
+		serv:      s,
+		transport: t,
+	}
+}
+
+type getEventsForWeek struct {
+	serv      Service
+	transport GetEventsWeekTransport
+}
+
+func (s *getEventsForWeek) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	event, userID, err := s.transport.DecodeRequest(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	notes, err := s.serv.EventsForWeek(userID, event)
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	if err = s.transport.EncodeResponse(r, w, notes); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func NewGetWeekHandler(s Service, t GetEventsWeekTransport) http.Handler {
+	return &getEventsForWeek{
+		serv:      s,
+		transport: t,
+	}
+}
+
+type getEventsForMonth struct {
+	serv      Service
+	transport GetEventsMonthTransport
+}
+
+func (s *getEventsForMonth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	event, userID, err := s.transport.DecodeRequest(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	notes, err := s.serv.EventsForMonth(userID, event)
+	if err != nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	if err = s.transport.EncodeResponse(r, w, notes); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func NewGetMonthHandler(s Service, t GetEventsMonthTransport) http.Handler {
+	return &getEventsForMonth{
 		serv:      s,
 		transport: t,
 	}

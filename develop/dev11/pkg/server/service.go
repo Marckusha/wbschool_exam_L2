@@ -1,78 +1,97 @@
 package server
 
+import (
+	"time"
+)
+
 type Service interface {
-	CreateEvent(ev Event) (err error)
-	UpdateEvent(newEv, oldEv Event) (err error)
-	DeleteEvent(ev Event) (err error)
-	EventsForDay(day string) (evs []Event, err error)
-	EventsForWeek(week string) (evs []Event, err error)
-	EventsForMonth(month string) (evs []Event, err error)
+	CreateEvent(userID int, ev Event) (err error)
+	UpdateEvent(userID int, newEv, oldEv Event) (err error)
+	DeleteEvent(userID int, ev Event) (err error)
+	EventsForDay(userID int, ev Event) (notes []string, err error)
+	EventsForWeek(userID int, ev Event) (notes []string, err error)
+	EventsForMonth(userID int, ev Event) (notes []string, err error)
 }
 
 type Event struct {
-	Day   string
-	Week  string
-	Month string
-	Task  string
+	Note string
+	Date time.Time
+}
+
+func NewEvent(str string) (res Event, err error) {
+	shortForm := "2006-01-02"
+
+	res.Date, err = time.Parse(shortForm, str)
+	if err != nil {
+		return
+	}
+	return
 }
 
 type service struct {
-	//sync.Mutex
-	Events []Event
+	data map[int][]Event //map[user_id][]events
 }
 
-func (s *service) CreateEvent(ev Event) (err error) {
-	s.Events = append(s.Events, ev)
-
+func (s *service) CreateEvent(userID int, ev Event) (err error) {
+	s.data[userID] = append(s.data[userID], ev)
 	return
 }
 
-func (s *service) UpdateEvent(newEv, oldEv Event) (err error) {
+func (s *service) UpdateEvent(userID int, newEv, oldEv Event) (err error) {
 
-	//logic
-
-	return
-}
-
-func (s *service) DeleteEvent(ev Event) (err error) {
-	/*if idEvent < 0 || idEvent >= len(s.Events) {
-		return errors.New("not found Event in the id")
-	}*/
-
-	//s.Events = append(s.Events[:idEvent], s.Events[idEvent+1:]...)
-
-	return
-}
-
-func (s *service) EventsForDay(day string) (evs []Event, err error) {
-	evs = make([]Event, 0, 5)
-
-	for _, d := range s.Events {
-		if d.Day == day {
-			evs = append(evs, d)
+	for ind, ev := range s.data[userID] {
+		if ev == oldEv {
+			s.data[userID][ind] = newEv
+			return
 		}
 	}
 
 	return
 }
 
-func (s *service) EventsForMonth(month string) (evs []Event, err error) {
-	evs = make([]Event, 0, 5)
+func (s *service) DeleteEvent(userID int, ev Event) (err error) {
 
-	for _, m := range s.Events {
-		if m.Month == month {
-			evs = append(evs, m)
+	for ind, cur := range s.data[userID] {
+		if cur == ev {
+			s.data[userID] = append(s.data[userID][:ind], s.data[userID][ind+1:]...)
+			return
 		}
 	}
 
 	return
 }
-func (s *service) EventsForWeek(week string) (evs []Event, err error) {
-	evs = make([]Event, 0, 5)
 
-	for _, w := range s.Events {
-		if w.Week == week {
-			evs = append(evs, w)
+func (s *service) EventsForDay(userID int, ev Event) (notes []string, err error) {
+	notes = []string{}
+
+	for _, event := range s.data[userID] {
+		if event.Date.Equal(ev.Date) {
+			notes = append(notes, event.Note)
+		}
+	}
+	return
+}
+
+func (s *service) EventsForWeek(userID int, ev Event) (notes []string, err error) {
+	notes = []string{}
+
+	y1, w1 := ev.Date.ISOWeek()
+	for _, event := range s.data[userID] {
+		y2, w2 := event.Date.ISOWeek()
+		if y1 == y2 && w1 == w2 {
+			notes = append(notes, event.Note)
+		}
+	}
+
+	return
+}
+
+func (s *service) EventsForMonth(userID int, ev Event) (notes []string, err error) {
+	notes = []string{}
+
+	for _, event := range s.data[userID] {
+		if event.Date.Year() == ev.Date.Year() && event.Date.Month() == ev.Date.Month() {
+			notes = append(notes, event.Note)
 		}
 	}
 
@@ -81,6 +100,6 @@ func (s *service) EventsForWeek(week string) (evs []Event, err error) {
 
 func NewService() Service {
 	return &service{
-		Events: []Event{},
+		data: map[int][]Event{},
 	}
 }

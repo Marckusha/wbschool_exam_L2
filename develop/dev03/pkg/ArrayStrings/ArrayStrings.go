@@ -10,10 +10,10 @@ import (
 var months = []string{"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"}
 
 //хранит полное значение строки
-//и строку, по которой будет производится сортировка
+//и строку-колонку, по которой будет производится сортировка
 type SortString struct {
-	Value      string //строка
-	IndexValue string //строка, по которой сортируется
+	Value      string //полная строка
+	IndexValue string //строка-колонка, по которой сортируется
 }
 
 type ArrayStrings []SortString
@@ -29,6 +29,7 @@ func NewArrayStrings(str []string) ArrayStrings {
 	return arr
 }
 
+//сравнение двух массивов строк
 func (ar1 ArrayStrings) Equal(ar2 ArrayStrings) bool {
 	if len(ar1) != len(ar2) {
 		return false
@@ -149,27 +150,10 @@ func (s ArrayStrings) Reverse() {
 func (s ArrayStrings) IsSorted(typeSort func(i, j int) bool) bool {
 
 	for i := 0; i < len(s)-1; i++ {
-		fmt.Println()
 		if !typeSort(i, i+1) {
-			//fmt.Println("disorder:", s[i+1])
 			return false
 		}
 	}
 
 	return true
-}
-
-//тест вывод
-func (ar ArrayStrings) Print() {
-	for _, elem := range ar {
-		fmt.Println(elem.Value)
-	}
-}
-
-//тест вывод
-func (ar ArrayStrings) PrintIndexValue() {
-	fmt.Println("Index value")
-	for _, elem := range ar {
-		fmt.Println(elem.IndexValue)
-	}
 }

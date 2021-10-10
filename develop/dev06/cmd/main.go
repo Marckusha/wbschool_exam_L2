@@ -23,9 +23,4 @@ func main() {
 	comm := root.NewCommand()
 	root.SetFlags(comm)
 	comm.Execute()
-
-	/*s := "h:"
-	d := strings.Split(s, "helloworld")
-	fmt.Println(len(d))*/
-
 }
