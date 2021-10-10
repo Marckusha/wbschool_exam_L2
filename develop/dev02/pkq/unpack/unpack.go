@@ -8,35 +8,55 @@ import (
 	"unicode"
 )
 
-func Unpack(str string) (string, error) {
-	var result string
+func Unpack(str string) (result string, err error) {
 
 	if str == "" {
-		return "", nil
+		return
 	}
 
+	buffer := ""
 	r := []rune(str)
 
 	for i := 0; i < len(r); i++ {
-		if unicode.IsLetter(r[i]) {
-			if i+1 < len(r) && unicode.IsLetter(r[i+1]) /*|| i == len(r)-1*/ {
-				result += string(r[i])
-			} else if i+1 < len(r) && unicode.IsDigit(r[i+1]) {
-				char := string(r[i])
-				mult, err := strconv.Atoi(string(r[i+1]))
+
+		if buffer != "" {
+			if unicode.IsLetter(r[i]) {
+				result += buffer
+				buffer = string(r[i])
+			} else if string(r[i]) == "\\" && i+1 < len(r) {
+				result += buffer
+				buffer = string(r[i+1])
+				i++
+			} else if unicode.IsDigit(r[i]) {
+				num := ""
+				for ; i < len(r) && unicode.IsDigit(r[i]); i++ {
+					num += string(r[i])
+				}
+				i--
+
+				mult, err := strconv.Atoi(num)
 				if err != nil {
-					fmt.Fprintln(os.Stderr, "ERROR!", err)
+					fmt.Fprintln(os.Stderr, "incorrect number", err)
 					return "", err
 				}
-				result += strings.Repeat(char, mult)
-				i++
+				result += strings.Repeat(buffer, mult)
+				buffer = ""
 			}
-		} else if string(r[i]) == "\\" {
-
 		} else {
-			return "", fmt.Errorf("error")
+			if unicode.IsLetter(r[i]) {
+				buffer = string(r[i])
+			} else if string(r[i]) == "\\" && i+1 < len(r) {
+				buffer = string(r[i+1])
+				i++
+			} else {
+				return "", fmt.Errorf("error")
+			}
+		}
+
+		if i == len(r)-1 && buffer == string(r[i]) {
+			result += buffer
 		}
 	}
 
-	return result, nil
+	return
 }

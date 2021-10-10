@@ -1,10 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"os"
 	"strconv"
@@ -16,9 +16,30 @@ type TelnetClient struct {
 	Address string
 	Port    string
 	Timeout time.Duration
-	reader  *bufio.Reader
-	writer  *bufio.Writer
 	conn    net.Conn
+}
+
+func main() {
+	flag.Parse()
+
+	if len(os.Args) < 3 {
+		log.Fatalf("incorrect input")
+		return
+	}
+
+	tc := TelnetClient{
+		Address: os.Args[2],
+		Port:    os.Args[3],
+		Timeout: StringToTime(*timeout),
+	}
+
+	err := tc.Dial()
+	if err != nil {
+		log.Fatalf("unable to connect: %v", err)
+		return
+	}
+	defer tc.Close()
+	tc.Execute()
 }
 
 func (tc *TelnetClient) Dial() (err error) {
@@ -107,28 +128,4 @@ func StringToTime(t string) (dur time.Duration) {
 	}
 
 	return
-}
-
-func main() {
-	flag.Parse()
-
-	if len(os.Args) < 3 {
-		fmt.Println("error")
-		return
-	}
-
-	tc := TelnetClient{
-		Address: os.Args[2],
-		Port:    os.Args[3],
-		Timeout: StringToTime(*timeout),
-	}
-
-	err := tc.Dial()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	tc.Execute()
-
-	defer tc.Close()
 }

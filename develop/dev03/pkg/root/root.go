@@ -3,6 +3,7 @@ package root
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -18,14 +19,15 @@ func NewCommand() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 
 			if len(args) == 0 {
-				fmt.Println("No such file")
+				log.Fatalf("No such file")
+
 				return
 			}
 
 			str, err := readLines(args[0])
 
 			if err != nil {
-				fmt.Println("Not found file")
+				log.Fatalf("Not found file: %v", err)
 				return
 			}
 

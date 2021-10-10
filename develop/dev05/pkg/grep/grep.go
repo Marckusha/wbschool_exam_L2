@@ -1,7 +1,6 @@
 package grep
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"wbschool_exam_L2/develop/dev05/pkg/models"
@@ -92,10 +91,6 @@ func (gs GrepString) GetStringResult() []string {
 	}
 
 	return resStrs
-}
-
-func (gs GrepString) TestPrint() {
-	fmt.Println(gs.indexes)
 }
 
 func NewGrepString(c models.Configs, s []string) *GrepString {

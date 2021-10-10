@@ -25,6 +25,18 @@ func TestUnpuck(t *testing.T) {
 			str:    "",
 			expStr: "",
 		},
+		{
+			str:    "qwe\\4\\5",
+			expStr: "qwe45",
+		},
+		{
+			str:    "qwe\\45",
+			expStr: "qwe44444",
+		},
+		{
+			str:    "qwe\\\\5",
+			expStr: "qwe\\\\\\\\\\",
+		},
 	}
 
 	for _, test := range testCases {

@@ -21,7 +21,6 @@ func TestOk(t *testing.T) {
 	countTests := 7
 	for i := 1; i <= countTests; i++ {
 
-		//fmt.Println("TEST N ", i)
 		sNum := strconv.Itoa(i)
 		pathTestFile := "tests/testFile" + sNum + ".txt"
 		pathExpectFile := "tests/expectFile" + sNum + ".txt"
@@ -42,8 +41,6 @@ func TestOk(t *testing.T) {
 		c.SetArgs(args)
 		c.Execute()
 
-		//fmt.Println(cmd.TestString == string(expectFile))
-
-		assert.Equal(t, root.TestString, string(expectFile), "uncorrect result. Test № "+sNum)
+		assert.Equal(t, root.TestString, string(expectFile), "incorrect result. Test № "+sNum)
 	}
 }
