@@ -34,7 +34,7 @@ func TestAfter(t *testing.T) {
 	config.FormatPos = 2
 	searchStr := "o"
 
-	gs := grep.NewGrepString(config, str)
+	gs := grep.NewGrep(config, str)
 	gs.SearchString(searchStr)
 	resStr := gs.GetStringResult()
 	assert.Equal(t, resStr, rightStr, "error: incorrect expected strings")
@@ -65,7 +65,7 @@ func TestBefore(t *testing.T) {
 	config.FormatPos = 2
 	searchStr := "ar"
 
-	gs := grep.NewGrepString(config, str)
+	gs := grep.NewGrep(config, str)
 	gs.SearchString(searchStr)
 	resStr := gs.GetStringResult()
 	assert.Equal(t, resStr, rightStr, "error: incorrect expected strings")
@@ -99,7 +99,7 @@ func TestContext(t *testing.T) {
 	config.IsIgnore = true
 	searchStr := "h"
 
-	gs := grep.NewGrepString(config, str)
+	gs := grep.NewGrep(config, str)
 	gs.SearchString(searchStr)
 	resStr := gs.GetStringResult()
 	assert.Equal(t, resStr, rightStr, "error: incorrect expected strings")
@@ -122,7 +122,7 @@ func TestCount(t *testing.T) {
 	config.IsInvert = true
 	searchStr := "d"
 
-	gs := grep.NewGrepString(config, str)
+	gs := grep.NewGrep(config, str)
 	resCount := gs.SearchString(searchStr)
 	assert.Equal(t, resCount, rightCount, "error: incorrect expected strings")
 }
@@ -147,7 +147,7 @@ func TestFixed(t *testing.T) {
 	config.IsNum = true
 	searchStr := "df"
 
-	gs := grep.NewGrepString(config, str)
+	gs := grep.NewGrep(config, str)
 	gs.SearchString(searchStr)
 	resStr := gs.GetStringResult()
 	assert.Equal(t, resStr, rightStr, "error: incorrect expected strings")

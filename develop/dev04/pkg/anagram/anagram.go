@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-//принимает массив строк и возвращает мапу с анаграммами согласно тз
+//GetMapAnagram принимает массив строк и возвращает мапу с анаграммами согласно тз
 func GetMapAnagram(str []string) map[string][]string {
 
 	an := make(map[string]string) // мапа, в которой хрянятся массивы анаграмм ключей
@@ -43,9 +43,7 @@ func strSort(str string) string {
 	for _, elem := range str {
 		index := rune(elem) - firstChar
 		if index >= 0 && index < rune(countChar) {
-			counter[index] += 1
-		} else {
-			//return error
+			counter[index]++
 		}
 	}
 

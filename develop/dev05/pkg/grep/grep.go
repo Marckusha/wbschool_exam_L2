@@ -6,13 +6,18 @@ import (
 	"wbschool_exam_L2/develop/dev05/pkg/models"
 )
 
-type GrepString struct {
+//Grep struct for grep utility
+//strs - consist input arr strings
+//indexes - consist indexes strs to input
+//config - config for grep
+type Grep struct {
 	strs    []string
 	indexes []int
 	config  models.Configs
 }
 
-func (gs *GrepString) SearchString(substr string) int {
+//SearchString main func; sets indexes
+func (gs *Grep) SearchString(substr string) int {
 
 	var (
 		eqFunc func(s1, s2 string) bool
@@ -32,7 +37,6 @@ func (gs *GrepString) SearchString(substr string) int {
 
 	//эквиваленция
 	//если мы инвентируем результат, то IsInvert false и eqFunc должен вернуть false, для верного результата
-
 	for i, elem := range gs.strs {
 		if gs.config.IsIgnore {
 			elem = strings.ToLower(elem)
@@ -45,7 +49,8 @@ func (gs *GrepString) SearchString(substr string) int {
 	return len(gs.indexes)
 }
 
-func (gs GrepString) GetStringResult() []string {
+//GetStringResult build string based on indexes and FormatOUT
+func (gs Grep) GetStringResult() []string {
 	var (
 		resStrs    []string
 		nums       []int
@@ -93,8 +98,9 @@ func (gs GrepString) GetStringResult() []string {
 	return resStrs
 }
 
-func NewGrepString(c models.Configs, s []string) *GrepString {
-	return &GrepString{
+//NewGrep ...
+func NewGrep(c models.Configs, s []string) *Grep {
+	return &Grep{
 		strs:   s,
 		config: c,
 	}

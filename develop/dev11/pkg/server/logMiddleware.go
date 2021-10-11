@@ -130,6 +130,7 @@ func (lg *logMiddleware) EventsForMonth(userID int, ev Event) (notes []string, e
 	return lg.serv.EventsForMonth(userID, ev)
 }
 
+//NewLogMiddleware create LogMiddleware
 func NewLogMiddleware(s Service, l logrus.FieldLogger) Service {
 	return &logMiddleware{
 		serv:   s,

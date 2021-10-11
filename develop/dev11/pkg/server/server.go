@@ -27,6 +27,7 @@ func (s *createEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+//NewCreateHandler ...
 func NewCreateHandler(s Service, t CreateEventTransport) http.Handler {
 	return &createEventHandler{
 		serv:      s,
@@ -59,6 +60,7 @@ func (s *updateEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//NewUpdateHandler ...
 func NewUpdateHandler(s Service, t UpdateEventTransport) http.Handler {
 	return &updateEventHandler{
 		serv:      s,
@@ -90,6 +92,7 @@ func (s *deleteEventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+//NewDeleteHandler ...
 func NewDeleteHandler(s Service, t DeleteEventTransport) http.Handler {
 	return &deleteEventHandler{
 		serv:      s,
@@ -123,6 +126,7 @@ func (s *getEventsForDay) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//NewGetDayHandler ...
 func NewGetDayHandler(s Service, t GetEventsDayTransport) http.Handler {
 	return &getEventsForDay{
 		serv:      s,
@@ -155,6 +159,7 @@ func (s *getEventsForWeek) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//NewGetWeekHandler ...
 func NewGetWeekHandler(s Service, t GetEventsWeekTransport) http.Handler {
 	return &getEventsForWeek{
 		serv:      s,
@@ -187,6 +192,7 @@ func (s *getEventsForMonth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//NewGetMonthHandler ...
 func NewGetMonthHandler(s Service, t GetEventsMonthTransport) http.Handler {
 	return &getEventsForMonth{
 		serv:      s,

@@ -8,6 +8,7 @@ import (
 	"unicode"
 )
 
+//Unpack return string "a4bc2d5e" => "aaaabccddddde"
 func Unpack(str string) (result string, err error) {
 
 	if str == "" {

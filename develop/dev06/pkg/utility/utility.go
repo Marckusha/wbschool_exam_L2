@@ -5,17 +5,20 @@ import (
 	"strings"
 )
 
+//Config set args for cut utility
 type Config struct {
 	Dilimeter   string
 	IsSeparated bool
 	Fields      []int
 }
 
+//CutUtility sets input strings and config
 type CutUtility struct {
 	config Config
 	strs   []string
 }
 
+//ExecuteUtility return result cut util
 func (cu *CutUtility) ExecuteUtility() []string {
 	res := make([]string, 0)
 	sort.Slice(cu.config.Fields, func(i, j int) bool {
@@ -43,6 +46,7 @@ func (cu *CutUtility) ExecuteUtility() []string {
 	return res
 }
 
+//NewCutUtility ...
 func NewCutUtility(conf *Config, s []string) *CutUtility {
 	return &CutUtility{
 		config: *conf,

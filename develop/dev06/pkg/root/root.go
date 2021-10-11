@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//NewCommand create command for grep utility
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "myGrep",
@@ -53,12 +54,14 @@ func NewCommand() *cobra.Command {
 	}
 }
 
+//SetFlags set flags for sort utility
 func SetFlags(c *cobra.Command) {
 	c.Flags().StringP("delimiter", "d", "\t", "Delimiter")
 	c.Flags().BoolP("separated", "s", false, "Separated")
 	c.Flags().IntSliceP("fields", "f", nil, "Fields")
 }
 
+//ReadLines return input array string
 func ReadLines(path string) ([]string, error) {
 	file, err := os.Open(path)
 	if err != nil {

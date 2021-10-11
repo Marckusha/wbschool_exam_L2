@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+//Service consist business logic program
 type Service interface {
 	CreateEvent(userID int, ev Event) (err error)
 	UpdateEvent(userID int, newEv, oldEv Event) (err error)
@@ -13,11 +14,13 @@ type Service interface {
 	EventsForMonth(userID int, ev Event) (notes []string, err error)
 }
 
+//Event data unit
 type Event struct {
 	Note string
 	Date time.Time
 }
 
+//NewEvent create Event
 func NewEvent(str string) (res Event, err error) {
 	shortForm := "2006-01-02"
 
@@ -98,6 +101,7 @@ func (s *service) EventsForMonth(userID int, ev Event) (notes []string, err erro
 	return
 }
 
+//NewService create Service
 func NewService() Service {
 	return &service{
 		data: map[int][]Event{},

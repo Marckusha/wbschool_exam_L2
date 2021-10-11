@@ -7,13 +7,15 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"wbschool_exam_L2/develop/dev03/pkg/ArrayStrings"
+	"wbschool_exam_L2/develop/dev03/pkg/arraystr"
 
 	"github.com/spf13/cobra"
 )
 
+//TestString for testing
 var TestString string
 
+//NewCommand create command for sort utility
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Run: func(cmd *cobra.Command, args []string) {
@@ -31,7 +33,7 @@ func NewCommand() *cobra.Command {
 				return
 			}
 
-			LinesStr := ArrayStrings.NewArrayStrings(str)
+			LinesStr := arraystr.NewArrayStrings(str)
 
 			//если флаг не выбран, то сортируем стандартной сортировкой
 			f := LinesStr.StandartSort
@@ -71,7 +73,7 @@ func NewCommand() *cobra.Command {
 
 			if ok, _ := cmd.Flags().GetBool("check"); ok {
 
-				cpSlice := ArrayStrings.NewArrayStrings(str)
+				cpSlice := arraystr.NewArrayStrings(str)
 
 				fmt.Println(LinesStr.Equal(cpSlice))
 
@@ -91,6 +93,7 @@ func NewCommand() *cobra.Command {
 	}
 }
 
+//SetFlags set flags for sort utility
 func SetFlags(c *cobra.Command) {
 	var count int
 
@@ -101,8 +104,6 @@ func SetFlags(c *cobra.Command) {
 	c.Flags().BoolP("month", "M", false, "Sort month")
 	c.Flags().BoolP("ignore", "b", false, "Ignore tailing space")
 	c.Flags().BoolP("check", "c", false, "Check sort")
-
-	//TODO
 	c.Flags().BoolP("suffix", "H", false, "Check suffix")
 }
 
