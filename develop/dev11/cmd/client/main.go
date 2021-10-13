@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-var port string = ":8086"
+var port string = ":8083"
 
 func postCreate() {
 
@@ -18,7 +18,7 @@ func postCreate() {
 	cli := http.Client{}
 
 	req, err := http.NewRequest("POST", "http://localhost"+port+"/create_event", r)
-	req.Header.Set("user_id", "1")
+	req.Header.Set("user_id", "2")
 	resp, err := cli.Do(req)
 
 	if err != nil {
